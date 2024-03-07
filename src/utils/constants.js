@@ -8,6 +8,12 @@ export const IMG_CDN_URL =
 
 export const shimmer_card_unit = 20;
 
+export const LAT = 18.5204;
+export const LONG = 73.8567;
+
+export const SWIGGY_URL =
+  "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9351929&lng=77.62448069999999&page_type=DESKTOP_WEB_LISTING";
+
 // RestaurantList is JSON Data for displaying cards
 export const resList = [
   {

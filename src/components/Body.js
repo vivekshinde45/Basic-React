@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import RestaurantCard from "../components/RestaurantCard";
-import { resList } from "../utils/constants";
+import { resList, LAT, LONG, SWIGGY_URL } from "../utils/constants";
 import { useState } from "react";
 import Shimmer from "../components/Shimmer";
 
@@ -18,18 +18,17 @@ const Body = () => {
 
   const fetchData = async () => {
     setIsLoaded(false);
-    let response = await fetch(
-      "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9351929&lng=77.62448069999999&page_type=DESKTOP_WEB_LISTING"
-    );
+    let response = await fetch(SWIGGY_URL);
     let jsonResponse = await response.json();
-    console.log(jsonResponse);
-    // setListOfRestaurants(jsonResponse?.data?.cards[0]?.data?.data?.cards);
-    setListOfRestaurants(resList);
-    setFilteredListOfRestaurants(resList);
+    // console.log(jsonResponse);
+    const responseOfRestaurants =
+      jsonResponse?.data.cards[4]?.card?.card?.gridElements?.infoWithStyle
+        ?.restaurants;
+
+    setListOfRestaurants(responseOfRestaurants);
+    setFilteredListOfRestaurants(responseOfRestaurants);
     setIsLoaded(true);
   };
-
-  //   callApiHandler();
 
   console.log("body renders");
 
@@ -46,11 +45,11 @@ const Body = () => {
           <button
             onClick={() => {
               console.log(searchText);
-              const filteredListOfRestaurants = listOfRestaurants.filter(
+              const getByNameListOfRestaurants = listOfRestaurants.filter(
                 (res) =>
-                  res.data.name.toLowerCase().includes(searchText.toLowerCase())
+                  res.info.name.toLowerCase().includes(searchText.toLowerCase())
               );
-              setFilteredListOfRestaurants(filteredListOfRestaurants);
+              setFilteredListOfRestaurants(getByNameListOfRestaurants);
             }}
           >
             Search
@@ -60,7 +59,7 @@ const Body = () => {
           className="filter-btn"
           onClick={() => {
             const filteredList = listOfRestaurants.filter(
-              (res) => res.data.avgRating > 4
+              (res) => res.info.avgRating > 4
             );
             console.log(filteredList);
             setFilteredListOfRestaurants(filteredList);
@@ -75,7 +74,7 @@ const Body = () => {
         <div className="res-container">
           {filteredListOfRestaurants.map((restaurant) => {
             return (
-              <RestaurantCard key={restaurant.data.id} resData={restaurant} />
+              <RestaurantCard key={restaurant?.info?.id} resData={restaurant} />
             );
           })}
           ;
